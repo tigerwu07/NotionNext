@@ -6,8 +6,6 @@ const BLOG = {
   NOTION_PAGE_ID:
     process.env.NOTION_PAGE_ID ||
     '2b9b5f29d55081caa6aad754c98615b3',
-  // 临时添加这行，部署后查看 Vercel 日志
-console.log('>>> DEBUG NOTION_PAGE_ID:', process.env.NOTION_PAGE_ID || '02ab3b8678004aa69e9e415905ef32a5');
   THEME: process.env.NEXT_PUBLIC_THEME || 'hexo', // 当前主题，在themes文件夹下可找到所有支持的主题；主题名称就是文件夹名，例如 example,fukasawa,gitbook,heo,hexo,landing,matery,medium,next,nobelium,plog,simple
   LANG: process.env.NEXT_PUBLIC_LANG || 'zh-CN', // e.g 'zh-CN','en-US'  see /lib/lang.js for more.
   SINCE: process.env.NEXT_PUBLIC_SINCE || 2006, // e.g if leave this empty, current year will be used.
@@ -72,5 +70,6 @@ console.log('>>> DEBUG NOTION_PAGE_ID:', process.env.NOTION_PAGE_ID || '02ab3b86
   // uuid重定向至 slug
   UUID_REDIRECT: process.env.UUID_REDIRECT || false
 }
-
+ // 临时添加这行，部署后查看 Vercel 日志
+console.log('>>> DEBUG NOTION_PAGE_ID:', process.env.NOTION_PAGE_ID || '02ab3b8678004aa69e9e415905ef32a5');
 module.exports = BLOG

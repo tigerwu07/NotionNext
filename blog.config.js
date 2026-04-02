@@ -71,5 +71,5 @@ const BLOG = {
   UUID_REDIRECT: process.env.UUID_REDIRECT || false
 }
  // 临时添加这行，部署后查看 Vercel 日志
-console.log('>>> DEBUG NOTION_PAGE_ID:', process.env.NOTION_PAGE_ID || '02ab3b8678004aa69e9e415905ef32a5');
+console.log('>>> DEBUG NOTION_PAGE_ID:', process.env.NOTION_PAGE_ID || '02ab3b8678004aa69e9e415905ef32a5'),
 module.exports = BLOG

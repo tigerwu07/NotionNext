@@ -17,6 +17,10 @@ export const BlogPostCardInfo = ({
   showPageCover,
   showSummary
 }) => {
+  const category = Array.isArray(post?.category)
+    ? post.category[0]
+    : post?.category
+
   return (
     <article
       className={`flex flex-col justify-between lg:p-6 p-4  ${showPageCover && !showPreview ? 'md:w-7/12 w-full md:max-h-60' : 'w-full'}`}>
@@ -38,17 +42,17 @@ export const BlogPostCardInfo = ({
           </h2>
 
           {/* 分类 */}
-          {post?.category && (
+          {category && (
             <div
               className={`flex mt-2 items-center ${
                 showPreview ? 'justify-center' : 'justify-start'
               } flex-wrap dark:text-gray-500 text-gray-400 `}>
               <SmartLink
-                href={`/category/${post.category}`}
+                href={`/category/${encodeURIComponent(category)}`}
                 passHref
                 className='cursor-pointer font-light text-sm menu-link hover:text-indigo-700 dark:hover:text-indigo-400 transform'>
                 <i className='mr-1 far fa-folder' />
-                {post.category}
+                {category}
               </SmartLink>
 
               <TwikooCommentCount

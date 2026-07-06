@@ -22,6 +22,9 @@ export default function PostHero({ post, siteInfo }) {
   }
 
   const headerImage = post?.pageCover ? post.pageCover : siteInfo?.pageCover
+  const category = Array.isArray(post?.category)
+    ? post.category[0]
+    : post?.category
 
   return (
     <div id='header' className='w-full h-96 relative md:flex-shrink-0 z-10'>
@@ -36,14 +39,14 @@ export default function PostHero({ post, siteInfo }) {
         className='bg-black bg-opacity-70 absolute top-0 w-full h-96 py-10 flex justify-center items-center '>
         <div className='mt-10'>
           <div className='mb-3 flex justify-center'>
-            {post.category && (
+            {category && (
               <>
                 <SmartLink
-                  href={`/category/${post.category}`}
+                  href={`/category/${encodeURIComponent(category)}`}
                   passHref
                   legacyBehavior>
                   <div className='cursor-pointer px-2 py-1 mb-2 border rounded-sm dark:border-white text-sm font-medium hover:underline duration-200 shadow-text-md text-white'>
-                    {post.category}
+                    {category}
                   </div>
                 </SmartLink>
               </>

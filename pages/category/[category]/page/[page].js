@@ -17,11 +17,14 @@ export default function Category(props) {
 export async function getStaticProps({ params: { category, page } }) {
   const from = 'category-page-props'
   let props = await fetchGlobalAllData({ from })
+  const decodedCategory = decodeSlugParam(category)
 
   // 过滤状态类型
   props.posts = props.allPages
     ?.filter(page => page.type === 'Post' && page.status === 'Published')
-    .filter(post => post && post.category && post.category.includes(category))
+    .filter(
+      post => post && post.category && post.category.includes(decodedCategory)
+    )
   // 处理文章页数
   props.postCount = props.posts.length
   const POSTS_PER_PAGE = siteConfig('POSTS_PER_PAGE', 12, props?.NOTION_CONFIG)
@@ -34,7 +37,7 @@ export async function getStaticProps({ params: { category, page } }) {
   delete props.allPages
   props.page = page
 
-  props = { ...props, category, page }
+  props = { ...props, category: decodedCategory, page }
 
   return {
     props,
@@ -76,6 +79,14 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true
+    fallback: 'blocking'
+  }
+}
+
+const decodeSlugParam = value => {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
   }
 }

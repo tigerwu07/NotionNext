@@ -9,7 +9,7 @@ import { Transition } from '@headlessui/react'
 import dynamic from 'next/dynamic'
 import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
 import ArticleAdjacent from './components/ArticleAdjacent'
 import ArticleCopyright from './components/ArticleCopyright'
 import { ArticleLock } from './components/ArticleLock'
@@ -191,16 +191,118 @@ const LayoutIndex = props => {
  * @returns
  */
 const LayoutPostList = props => {
+  const router = useRouter()
+  const listProps = useHexoPostListProps(props, router)
+
   return (
     <div className='pt-8'>
-      <SlotBar {...props} />
+      <SlotBar {...listProps} />
       {siteConfig('POST_LIST_STYLE') === 'page' ? (
-        <BlogPostListPage {...props} />
+        <BlogPostListPage {...listProps} />
       ) : (
-        <BlogPostListScroll {...props} />
+        <BlogPostListScroll {...listProps} />
       )}
     </div>
   )
+}
+
+const decodeSlugValue = value => {
+  if (Array.isArray(value)) {
+    value = value[0]
+  }
+  if (typeof value !== 'string') {
+    return value
+  }
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+const getPostTags = post => {
+  if (Array.isArray(post?.tags)) {
+    return post.tags
+  }
+  if (Array.isArray(post?.tagItems)) {
+    return post.tagItems.map(tag => tag?.name).filter(Boolean)
+  }
+  return []
+}
+
+const getPostCategories = post => {
+  if (Array.isArray(post?.category)) {
+    return post.category
+  }
+  return post?.category ? [post.category] : []
+}
+
+const filterPostsByRoute = ({ posts, tag, category }) => {
+  let filteredPosts = posts
+  if (tag) {
+    filteredPosts = filteredPosts.filter(post => getPostTags(post).includes(tag))
+  }
+  if (category) {
+    filteredPosts = filteredPosts.filter(post =>
+      getPostCategories(post).includes(category)
+    )
+  }
+  return filteredPosts
+}
+
+const useHexoPostListProps = (props, router) => {
+  return useMemo(() => {
+    if (props?.posts?.length > 0 || !props?.allNavPages?.length) {
+      return props
+    }
+
+    const tag = decodeSlugValue(props?.tag || router?.query?.tag)
+    const category = decodeSlugValue(props?.category || router?.query?.category)
+    const currentPage = Number(props?.page || router?.query?.page || 1) || 1
+    const POSTS_PER_PAGE = siteConfig(
+      'POSTS_PER_PAGE',
+      12,
+      props?.NOTION_CONFIG
+    )
+    const POST_LIST_STYLE = siteConfig(
+      'POST_LIST_STYLE',
+      'page',
+      props?.NOTION_CONFIG
+    )
+
+    const filteredPosts = filterPostsByRoute({
+      posts: props.allNavPages,
+      tag,
+      category
+    })
+    const posts =
+      POST_LIST_STYLE === 'page'
+        ? filteredPosts.slice(
+            POSTS_PER_PAGE * (currentPage - 1),
+            POSTS_PER_PAGE * currentPage
+          )
+        : filteredPosts
+
+    return {
+      ...props,
+      tag,
+      category,
+      page: currentPage,
+      posts,
+      postCount: filteredPosts.length
+    }
+  }, [
+    props,
+    props?.posts,
+    props?.allNavPages,
+    props?.tag,
+    props?.category,
+    props?.page,
+    props?.NOTION_CONFIG,
+    router?.query?.tag,
+    router?.query?.category,
+    router?.query?.page
+  ])
 }
 
 /**
@@ -392,7 +494,7 @@ const LayoutCategoryIndex = props => {
             return (
               <SmartLink
                 key={category.name}
-                href={`/category/${category.name}`}
+                href={`/category/${encodeURIComponent(category.name)}`}
                 passHref
                 legacyBehavior>
                 <div

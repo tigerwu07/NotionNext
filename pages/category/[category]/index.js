@@ -16,6 +16,7 @@ export default function Category(props) {
 export async function getStaticProps({ params: { category }, locale }) {
   const from = 'category-props'
   let props = await fetchGlobalAllData({ from, locale })
+  const decodedCategory = decodeSlugParam(category)
 
   // 过滤状态
   props.posts = props.allPages?.filter(
@@ -23,7 +24,7 @@ export async function getStaticProps({ params: { category }, locale }) {
   )
   // 处理过滤
   props.posts = props.posts.filter(
-    post => post && post.category && post.category.includes(category)
+    post => post && post.category && post.category.includes(decodedCategory)
   )
 
   // 处理文章页数
@@ -45,7 +46,7 @@ export async function getStaticProps({ params: { category }, locale }) {
 
   delete props.allPages
 
-  props = { ...props, category }
+  props = { ...props, category: decodedCategory }
 
   return {
     props,
@@ -66,6 +67,14 @@ export async function getStaticPaths() {
     paths: Object.keys(categoryOptions).map(category => ({
       params: { category: categoryOptions[category]?.name }
     })),
-    fallback: true
+    fallback: 'blocking'
+  }
+}
+
+const decodeSlugParam = value => {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
   }
 }

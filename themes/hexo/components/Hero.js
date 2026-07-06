@@ -17,6 +17,10 @@ const Hero = props => {
   const [typed, changeType] = useState()
   const { siteInfo } = props
   const { locale } = useGlobal()
+  const homeBannerImage =
+    siteInfo?.pageCover ||
+    siteConfig('HOME_BANNER_IMAGE') ||
+    siteConfig('HOME_BANNER_IMAGE', null, props?.NOTION_CONFIG)
   const scrollToWrapper = () => {
     window.scrollTo({ top: wrapperTop, behavior: 'smooth' })
   }
@@ -93,7 +97,7 @@ const Hero = props => {
         priority
         id='header-cover'
         alt={siteInfo?.title}
-        src={siteInfo?.pageCover}
+        src={homeBannerImage}
         width={1920}
         height={1080}
         className={`header-cover w-full h-screen object-cover object-center ${siteConfig('HEXO_HOME_NAV_BACKGROUND_IMG_FIXED', null, CONFIG) ? 'fixed' : ''}`}

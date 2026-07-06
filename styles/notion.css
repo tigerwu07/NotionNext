@@ -1012,12 +1012,15 @@ code[class*='language-'] {
   white-space: pre-wrap;
   word-break: break-word;
   overflow: hidden;
+  line-height: 1.7;
 }
 
-.notion-callout-text .notion-text{
+.notion-callout-text .notion-text,
+.notion-callout-text .notion-block {
   padding: 0px 0px !important;
   margin: 0px 0px !important;
-  line-height: normal !important;
+  line-height: inherit !important;
+  min-height: 0;
 }
 
 .notion-toggle {

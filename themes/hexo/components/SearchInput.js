@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useImperativeHandle, useRef, useState } from 'react'
 import { useGlobal } from '@/lib/global'
 let lock = false
@@ -6,7 +5,6 @@ let lock = false
 const SearchInput = props => {
   const { currentSearch, cRef, className } = props
   const [onLoading, setLoadingState] = useState(false)
-  const router = useRouter()
   const searchInputRef = useRef()
   const { locale } = useGlobal()
   useImperativeHandle(cRef, () => {
@@ -18,15 +16,12 @@ const SearchInput = props => {
   })
 
   const handleSearch = () => {
-    const key = searchInputRef.current.value
+    const key = searchInputRef.current.value?.trim()
     if (key && key !== '') {
       setLoadingState(true)
-      router.push({ pathname: '/search/' + key }).then(r => {
-        setLoadingState(false)
-      })
-      // location.href = '/search/' + key
+      window.location.href = `/search/${encodeURIComponent(key)}`
     } else {
-      router.push({ pathname: '/' }).then(r => {})
+      window.location.href = '/'
     }
   }
   const handleKeyUp = e => {

@@ -355,7 +355,7 @@ const LayoutSearch = props => {
     if (currentSearch) {
       replaceSearchResult({
         doms: document.getElementsByClassName('replace'),
-        search: keyword,
+        search: currentSearch,
         target: {
           element: 'span',
           className: 'text-red-500 border-b border-dashed'

@@ -19,6 +19,10 @@ const Index = props => {
  * @returns
  */
 export async function getStaticProps({ params: { keyword, page }, locale }) {
+  try {
+    keyword = decodeURIComponent(keyword)
+  } catch (error) {}
+
   const props = await fetchGlobalAllData({
     from: 'search-props',
     pageType: ['Post'],
@@ -54,7 +58,7 @@ export async function getStaticProps({ params: { keyword, page }, locale }) {
 export function getStaticPaths() {
   return {
     paths: [{ params: { keyword: 'NotionNext', page: '1' } }],
-    fallback: true
+    fallback: 'blocking'
   }
 }
 

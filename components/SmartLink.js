@@ -56,6 +56,7 @@ const SmartLink = ({ href, children, ...rest }) => {
       path === '/' ||
       /^\/tag\/.+/.test(path) ||
       /^\/category\/.+/.test(path) ||
+      /^\/search(\/.*)?$/.test(path) ||
       /^\/page\/\d+/.test(path)
     )
   }

@@ -23,6 +23,16 @@ This file records small local patches that should be checked after syncing from 
 - Keep until:
   - Upstream fixes Hexo list rendering so client-side navigation and refresh produce the same post list.
 
+## Hexo main content loading state
+
+- Files:
+  - `themes/hexo/index.js`
+- Reason:
+  - The main content transition was controlled by global route loading state.
+  - If `onLoading` stays true during client-side navigation, `#container-inner` can look blank until a full refresh.
+- Keep until:
+  - Upstream makes Hexo route loading resilient without hiding already available content.
+
 ## Encoded Chinese tag/category routes
 
 - Files:

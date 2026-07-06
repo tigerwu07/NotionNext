@@ -136,7 +136,7 @@ const LayoutBase = props => {
                 <ArticleSwitchPlaceholder />
               ) : (
                 <Transition
-                  show={isArticleSlugPage ? true : !onLoading}
+                  show={true}
                   appear={true}
                   enter='transition ease-in-out duration-700 transform order-first'
                   enterFrom='opacity-0 translate-y-16'

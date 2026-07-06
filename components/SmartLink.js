@@ -49,6 +49,38 @@ const SmartLink = ({ href, children, ...rest }) => {
 
   const isExternal = urlString.startsWith('http') && !urlString.startsWith(LINK)
 
+  const shouldHardNavigate = value => {
+    if (typeof value !== 'string') return false
+    const path = value.split('?')[0].split('#')[0]
+    return (
+      path === '/' ||
+      /^\/tag\/.+/.test(path) ||
+      /^\/category\/.+/.test(path) ||
+      /^\/page\/\d+/.test(path)
+    )
+  }
+
+  const stringifyHref = value => {
+    if (typeof value === 'string') return value
+    if (!value || typeof value !== 'object') return '#'
+
+    const pathname = value.pathname || '#'
+    const query = value.query || {}
+    const params = new URLSearchParams()
+    Object.entries(query).forEach(([key, paramValue]) => {
+      if (paramValue === undefined || paramValue === null || paramValue === '') {
+        return
+      }
+      if (Array.isArray(paramValue)) {
+        paramValue.forEach(item => params.append(key, item))
+      } else {
+        params.set(key, paramValue)
+      }
+    })
+    const queryString = params.toString()
+    return queryString ? `${pathname}?${queryString}` : pathname
+  }
+
   const getPersistedQuery = () => {
     if (typeof window === 'undefined') return {}
     const queryString = window.location.search?.slice(1) || ''
@@ -111,6 +143,14 @@ const SmartLink = ({ href, children, ...rest }) => {
     typeof href === 'string'
       ? mergePreservedQueryForStringHref(href)
       : mergePreservedQueryForObjectHref(href)
+
+  if (shouldHardNavigate(urlString)) {
+    return (
+      <a href={stringifyHref(mergedHref)} {...filterDOMProps(rest)}>
+        {children}
+      </a>
+    )
+  }
 
   return (
     <Link href={mergedHref} {...filterLinkProps(rest)}>

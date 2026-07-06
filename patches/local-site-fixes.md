@@ -33,6 +33,16 @@ This file records small local patches that should be checked after syncing from 
 - Keep until:
   - Upstream makes Hexo route loading resilient without hiding already available content.
 
+## Hard navigation for list routes
+
+- Files:
+  - `components/SmartLink.js`
+- Reason:
+  - Refreshing tag, category, and pagination pages works, while client-side route transitions can leave Hexo content blank.
+  - These routes now use normal browser navigation so clicks take the same path as a refresh.
+- Keep until:
+  - Upstream fixes the Hexo client-route data/rendering path for list routes.
+
 ## Encoded Chinese tag/category routes
 
 - Files:

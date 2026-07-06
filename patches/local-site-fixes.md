@@ -8,7 +8,7 @@ This file records small local patches that should be checked after syncing from 
   - `themes/hexo/components/Hero.js`
 - Reason:
   - The Hexo home hero previously rendered only `siteInfo.pageCover`.
-  - After upstream syncs, the Notion Config value `HOME_BANNER_IMAGE` may exist in page props while `siteInfo.pageCover` is empty or not the intended value.
+  - The Notion Config value `HOME_BANNER_IMAGE` should win over a stale or unintended `siteInfo.pageCover`.
 - Keep until:
   - Upstream Hexo `Hero` reliably reads `siteConfig('HOME_BANNER_IMAGE')` or otherwise preserves the configured banner image.
 
@@ -18,8 +18,8 @@ This file records small local patches that should be checked after syncing from 
   - `themes/hexo/index.js`
   - `themes/hexo/components/BlogPostListPage.js`
 - Reason:
-  - Client-side navigation to tag, category, or paginated routes could render an empty list even when `allNavPages` in page props contains posts.
-  - Hexo now derives a fallback list from `allNavPages` when route props contain no `posts`.
+  - Client-side navigation to tag, category, or paginated routes could render an empty list or stale list even when `allNavPages` in page props contains posts.
+  - Hexo now derives list-route posts from `allNavPages` and the current URL for tag, category, and paginated routes.
 - Keep until:
   - Upstream fixes Hexo list rendering so client-side navigation and refresh produce the same post list.
 

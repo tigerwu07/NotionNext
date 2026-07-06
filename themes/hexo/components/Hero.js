@@ -18,9 +18,10 @@ const Hero = props => {
   const { siteInfo } = props
   const { locale } = useGlobal()
   const homeBannerImage =
-    siteInfo?.pageCover ||
+    props?.NOTION_CONFIG?.HOME_BANNER_IMAGE ||
     siteConfig('HOME_BANNER_IMAGE') ||
-    siteConfig('HOME_BANNER_IMAGE', null, props?.NOTION_CONFIG)
+    siteConfig('HOME_BANNER_IMAGE', null, props?.NOTION_CONFIG) ||
+    siteInfo?.pageCover
   const scrollToWrapper = () => {
     window.scrollTo({ top: wrapperTop, behavior: 'smooth' })
   }

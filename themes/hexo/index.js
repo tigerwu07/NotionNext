@@ -250,15 +250,50 @@ const filterPostsByRoute = ({ posts, tag, category }) => {
   return filteredPosts
 }
 
+const getHexoRouteState = router => {
+  const cleanPath = (router?.asPath || '').split('?')[0].split('#')[0]
+  const tagMatch = cleanPath.match(/^\/tag\/([^/]+)(?:\/page\/(\d+))?\/?$/)
+  if (tagMatch) {
+    return {
+      shouldDerive: true,
+      tag: decodeSlugValue(tagMatch[1]),
+      page: Number(tagMatch[2] || 1) || 1
+    }
+  }
+
+  const categoryMatch = cleanPath.match(
+    /^\/category\/([^/]+)(?:\/page\/(\d+))?\/?$/
+  )
+  if (categoryMatch) {
+    return {
+      shouldDerive: true,
+      category: decodeSlugValue(categoryMatch[1]),
+      page: Number(categoryMatch[2] || 1) || 1
+    }
+  }
+
+  const pageMatch = cleanPath.match(/^\/page\/(\d+)\/?$/)
+  if (pageMatch) {
+    return {
+      shouldDerive: true,
+      page: Number(pageMatch[1] || 1) || 1
+    }
+  }
+
+  return { shouldDerive: false }
+}
+
 const useHexoPostListProps = (props, router) => {
   return useMemo(() => {
-    if (props?.posts?.length > 0 || !props?.allNavPages?.length) {
+    const routeState = getHexoRouteState(router)
+
+    if (!routeState.shouldDerive || !props?.allNavPages?.length) {
       return props
     }
 
-    const tag = decodeSlugValue(props?.tag || router?.query?.tag)
-    const category = decodeSlugValue(props?.category || router?.query?.category)
-    const currentPage = Number(props?.page || router?.query?.page || 1) || 1
+    const tag = routeState.tag
+    const category = routeState.category
+    const currentPage = routeState.page
     const POSTS_PER_PAGE = siteConfig(
       'POSTS_PER_PAGE',
       12,
@@ -299,6 +334,7 @@ const useHexoPostListProps = (props, router) => {
     props?.category,
     props?.page,
     props?.NOTION_CONFIG,
+    router?.asPath,
     router?.query?.tag,
     router?.query?.category,
     router?.query?.page
